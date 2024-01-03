@@ -1,0 +1,128 @@
+@import url(https://fonts.googleapis.com/css?family=Raleway:400,200,600);
+.baseline-grid:hover {
+  opacity: 1;
+}
+
+.guide {
+  margin-bottom: 6.25rem;
+}
+
+.guide, .guide:before, .guide:after {
+  height: 1.25rem;
+  width: 100%;
+  outline: 1px solid turquoise;
+}
+
+.guide:before, .guide:after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 200%;
+}
+
+.guide:after {
+  top: 400%;
+}
+
+.recipe-container {
+  font-family: Raleway, sans-serif;
+  width: 50%;
+  height: 100%;
+  background-color: white;
+}
+
+.recipe-content {
+  position: absolute;
+  width: 45%;
+  height: 50%;
+  right: 0;
+  top: 20px;
+  padding: 2.5rem 1rem;
+}
+
+.heading-2 {
+  font-size: 0.75rem;
+  line-height: 1.25rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  margin: 0;
+  letter-spacing: 4px;
+  color: #999;
+}
+
+.heading-1 {
+  font-size: 1.778rem;
+  line-height: 2.5rem;
+  font-weight: 200;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 1.25rem 0;
+}
+
+.paragraph {
+  font-size: 1rem;
+  line-height: 1.25rem;
+  margin: 0 0 1.25rem 0;
+}
+
+.recipe-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.recipe-list.meta > .recipe-item {
+  display: inline-block;
+  padding-right: 2rem;
+}
+
+.recipe-item {
+  padding: 0 1rem;
+}
+
+.recipe-item:first-child {
+  padding-left: 0;
+}
+
+.recipe-item > .recipe-value {
+  font-size: 1.333rem;
+  line-height: 2.5rem;
+  font-weight: bold;
+}
+
+.recipe-item > .recipe-text {
+  font-size: 0.75rem;
+  line-height: 1.25rem;
+}
+
+.recipe-item + .recipe-item {
+  border-left: 1px solid #ccc;
+}
+
+.recipe-stars {
+  line-height: 2.5rem;
+  margin: 1.25rem 0;
+  font-size: 1rem;
+  line-height: 2.5rem;
+}
+
+.recipe-star {
+  height: auto;
+  width: auto;
+  display: inline-block;
+}
+
+.recipe-star:before {
+  content: '\2605';
+  color: gold;
+}
+
+.recipe-star.inactive:before {
+  color: gray;
+}
+
+.recipe-ratings {
+  color: gray;
+  margin: 0 0.5rem;
+}
+

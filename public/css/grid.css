@@ -1,0 +1,101 @@
+#formall{
+  background-color: black;
+}
+.card {
+  position:relative;
+  background: #fff;
+  max-width: 300px;
+  margin: 20px auto;
+  box-shadow: 0px 0px 30px 2px #000;
+  border-radius: 10px;
+}
+.card .header {
+  background: url("http://img.taste.com.au/UZVXAdo7/taste/2016/11/chinese-egg-noodle-and-vegetable-stir-fry-94186-1.jpeg") no-repeat center;
+  background-size: cover;
+  min-height: 100px;
+}
+.card .header .icon a .fa-heart-o {
+  position: absolute;
+  left: 85%;
+  bottom: 30.7%;
+  background: #17BEBB;
+  color: #fff;
+  font-size: 1.3em;
+  font-weight: bold;
+  padding: 5px;
+  border-radius: 50%;
+  box-shadow: 0px 5px 30px 1px #17BEBB;
+}
+.card .text .food {
+  color: #212129;
+  text-align: left;
+  font-weight: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 5px 30px;
+}
+.card .text .fa-clock-o {
+  color: #9B9B9B;
+  margin: 0 30px;
+}
+.card .text .fa-users {
+  color: #9B9B9B;
+}
+.card .stars {
+  margin: 10px 30px;
+}
+.card .stars li a i {
+  color: #FFE500;
+}
+.card .info {
+  margin: 10px 30px;
+}
+.card a.btn {
+  background: #6361ee;
+  color: #fff;
+  position: relative;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-align: center;
+  padding: 10px;
+  transition: 250ms;
+  width: 45%;
+}
+.card a.btn:hover {
+  background: #3835ed;
+  transition: 250ms;
+}
+
+#btnfull{
+  text-align: center;
+}
+
+.card .text .otro  {
+  color: #212129;
+  text-align: left;
+  font-weight: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 5px 30px;
+}
+
+.btn-show{
+  background: rgb(247, 84, 84);
+  color: rgb(255, 255, 255);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-align: center;
+  padding: 10px;
+  transition: 250ms;
+  width: 45%;
+  width: 100%;
+  position: absolute;
+  border-radius: 10px;
+  border-color: rgb(247, 84, 84);
+}
+.btn-show:hover {
+  background: #e82d23;
+  transition: 250ms;
+  text-decoration: none;
+  border-radius: 10px;
+}

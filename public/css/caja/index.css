@@ -1,0 +1,227 @@
+.demo-card-square1.mdl-card {
+    width: 320px;
+    height: 320px;
+    margin:auto;
+}
+.demo-card-square1 > .mdl-card__title {
+    color: #fff;
+    background:
+    url('https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_directions_car_48px-128.png') bottom right 15% no-repeat #46B6AC;
+}
+.demo-card-square2.mdl-card {
+    width: 320px;
+    height: 320px;
+}
+.demo-card-square2 > .mdl-card__title {
+    color: #fff;
+    background:
+    url('') bottom right 15% no-repeat #46B6AC;
+}
+
+ol, ul {
+    list-style: none;
+}
+blockquote, q {
+    quotes: none;
+}
+blockquote:before, blockquote:after, q:before, q:after {
+    content: '';
+    content: none;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+header h2 {
+    margin: 25px 10px;
+    font-size: 28px;
+    text-align: center;
+    color:  #ea5849;
+}
+.container {
+    margin: 10px auto;
+    display: table;
+    max-width: 100%;
+    width: 100%;
+}
+
+nav.menu {
+    background: #ea5849;
+    position: relative;
+    min-height: 45px;
+    height: 100%;
+}
+
+.menu > ul > li {
+    list-style: none;
+    display: inline-block;
+    color: #fff;
+    line-height: 45px;
+    
+}
+.menu > ul li a, .xs-menu li a {
+    text-decoration: none;
+    color: #fff;
+    display:block;
+    padding: 0px 24px;
+}
+.menu > ul li a:hover {
+    background:#444;
+    color: #fff;
+    transition-duration: 0.3s;
+    -moz-transition-duration: 0.3s;
+    -webkit-transition-duration: 0.3s;
+}
+
+.displaynone{
+    display: none;
+}
+.xs-menu-cont{
+display:none;
+}
+.xs-menu-cont > a:hover{
+cursor: pointer;
+}
+    
+.xs-menu li {
+color: #fff;
+padding: 14px 30px;
+border-bottom: 1px solid #ccc;
+background: #FF0000;
+
+}
+.xs-menu  a{
+text-decoration:none;
+}
+
+
+#menutoggle i {
+    color: #fff;
+    font-size: 33px;
+    margin: 0;
+    padding: 0;
+}
+
+
+/*--column--*/
+.mm-6column:after, .mm-6column:before, .mm-3column:after, .mm-3column:before{
+content:"";
+display:table;
+clear:both;
+
+
+}
+.mm-6column, .mm-3column {
+float: left;
+position: relative;
+}
+.mm-6column {
+    width: 100%;
+}
+.mm-3column {
+        width: 25%;
+}
+.responsive-img {
+    display: block;
+    max-width: 100%;
+
+}
+.left-images{
+margin-right:25px;
+}
+.left-images, .left-categories-list {
+    float: left;
+}
+.categories-list li {
+    display: block;
+    line-height: normal;
+    margin: 0;
+    padding: 5px 0;
+}
+.categories-list li :hover{
+    background:inherit !important;
+}
+
+.categories-list span {
+    font-size: 18px;
+    padding-bottom: 5px;
+    text-transform: uppercase;
+}
+.mm-view-more{
+    background: none repeat scroll 0 0 #FF0000;
+    color: #fff;
+    display: inline !important;
+    line-height: normal;
+    padding: 5px 8px !important;
+    margin-top:10px;
+}
+.display-on{
+display:block;
+transition-duration: 0.9s;
+}
+.drop-down > a:after{
+content:"\f103";
+color:red;
+font-family: FontAwesome;
+font-style: normal;
+margin-left: 5px;
+}
+
+img{
+    height:150px;
+    width:100%;
+}
+
+div [class^="col-"]{
+    padding-left:5px;
+    padding-right:5px;
+}
+.card{
+    transition:0.5s;
+    cursor:pointer;
+}
+.card-title{  
+    font-size:15px;
+    transition:1s;
+    cursor:pointer;
+}
+.card-title i{  
+    font-size:15px;
+    transition:1s;
+    cursor:pointer;
+    color:#ffa710
+}
+.card-title i:hover{
+    transform: scale(1.25) rotate(100deg); 
+    color:#18d4ca;
+    
+}
+.card:hover{
+    transform: scale(1.05);
+    box-shadow: 10px 10px 15px rgba(0,0,0,0.3);
+}
+.card-text{
+    height:80px;  
+}
+
+.card::before, .card::after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    transform: scale3d(0, 0, 1);
+    transition: transform .3s ease-out 0s;
+    background: rgba(255, 255, 255, 0.1);
+    content: '';
+    pointer-events: none;
+}
+.card::before {
+    transform-origin: left top;
+}
+.card::after {
+    transform-origin: right bottom;
+}
+.card:hover::before, .card:hover::after, .card:focus::before, .card:focus::after {
+    transform: scale3d(1, 1, 1);
+}

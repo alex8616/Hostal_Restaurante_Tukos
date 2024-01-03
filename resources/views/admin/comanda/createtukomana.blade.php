@@ -1,0 +1,858 @@
+@extends('layouts.app', ['activePage' => 'dashboard', 'titlePage' => __('Dashboard')])
+@section('content')
+<br><br><hr>
+<div class="container">
+      <header>
+    <div style="text-align:center;margin-top:2px;font-weight:bold;text-decoration:none;">
+    </div>            
+      </header>
+  <div class="xs-menu-cont">
+  <a id="menutoggle"><i class="fa fa-align-justify"></i> </a>
+    <nav class="xs-menu displaynone">
+      <ul>
+        <li>
+          <a href="{{route('admin.caja.index')}}">CAJA</a>
+        </li>
+        <li>
+          <a href="#">About</a>
+        </li>
+        <li>
+          <a href="#">Services</a>
+        </li>
+        <li>
+          <a href="#">Team</a>
+        </li>
+        <li>
+          <a href="#">Portfolio</a>
+        </li>
+        <li>
+          <a href="#">Blog</a>
+        </li>
+        <li>
+          <a href="#">Contact</a>
+        </li>
+
+      </ul>
+    </nav>
+  </div>
+  <nav class="menu">
+    <ul>
+      <li class="active">
+        <a href="{{route('admin.comanda.create')}}">CLIENTE NORMAL</a>
+      </li>
+      <li>
+            <a href="{{route('admin.comanda.createpensionado')}}">CLIENTE PENSIONADO</a>  
+      </li>
+      <li>
+            <a href="{{route('admin.comanda.createtukomana')}}">TUKOMANAS</a>  
+      </li>
+      <li>
+            <a href="{{route('admin.comanda.createcafeteria')}}">CAFETERIA</a>  
+      </li>
+    </ul>
+  </nav>
+</div>
+<form action="{{ route('admin.comanda.storetukomana') }}" method="post" enctype="multipart/form-data" class="registrar-form">
+  @csrf
+  <div class="row" style="margin-top: -30px; margin-left:auto; margin-right:auto;">
+      <div class="col-md-7">
+      <div class="card card-primary card-outline div_radius">
+          <div class="card-header">
+              <div class="row">
+                  <input type="text" id="caja_id" name="caja_id" value="{{ $ultimo_registro->id }}" hidden>
+                  
+                  <div class="col-md-12">
+                      <div class="form-group">
+                          <label for="id_plato">Plato</label>                          
+                         <select name="id_plato" id="id_plato" class="form-select custom-select" size="6" style="width: 100%;">
+                          <option value="" data-icon="fa-solid fa-bowl-rice" disabled selected hidden>Buscar Plato</option>
+                          <center><optgroup label="T U K O M A N A S" class="column"></center>
+                            @foreach ($platos as $index => $plato)
+                              @if ($plato->Nombre_categoria == 'TUKOMANAS')
+                                <option value="{{ $plato->id }}_{{ $plato->stock }}_{{ $plato->Precio_plato }}">
+                                  {{ $plato->Nombre_plato }}
+                                </option>
+                              @endif
+                            @endforeach
+                          </optgroup>
+                          <center><optgroup label="G A S E O S A S" class="column"></center>
+                            @foreach ($platos as $index => $plato)
+                              @if ($plato->Nombre_categoria == 'Bebidas/Gaseosas/Jugos')
+                                <option value="{{ $plato->id }}_{{ $plato->stock }}_{{ $plato->Precio_plato }}">
+                                  {{ $plato->Nombre_plato }}
+                                </option>
+                              @endif
+                            @endforeach
+                          </optgroup>
+                        </select>
+
+                          </div><br>                        
+                      </div>
+              </div>    
+              <div class="row">
+                  <div class="col-md-3">
+                      <label for="cantidad">Cantidad</label>
+                      <input type="number" class="form-control" name="cantidad" id="cantidad" aria-describedby="helpId" min="0" max="100">
+                  </div>
+                  <div class="col-md-3">
+                      <label for="Precio_plato">Precio de venta</label>
+                      <input type="number" class="form-control" name="Precio_plato" id="Precio_plato" aria-describedby="helpId">
+                  </div>
+                  <div class="col-md-6">
+                      <label for="comentario">Comentario</label>
+                      <textarea class="form-control" name="comentario" id="comentario" rows="1"></textarea>
+                  </div>
+              </div>
+              <button type="button" class="btn btn-default btn1" id="agregar">
+              <i class="fas fa-check-circle text-success"></i>
+              Agregar
+              </button>
+              <div class="alert alert-danger print-save-error-msg" style="display:none">
+              <ul></ul>
+              </div>                
+          </div>
+          <div class="card-body" style="margin-top: -18px;">
+          <!-- <h5 class="card-title">Special title treatment</h5> -->
+          <div class="tableFixHead" style="height: 268px;">
+          <table id="detalles" style="width:100%" class="table table-bordered table-sm table-hover text-center __web-inspector-hide-shortcut__">
+              <thead>
+                  <tr>
+                    <th>N</th>
+                    <th>Plato</th>
+                    <th>Comentario</th>
+                    <th style="width: 10px;">Cantidad</th>
+                    <th style="width: 80px;">P. venta</th>
+                    <th style="width: 80px;">Subtotal</th>
+                    <th><i class="fa-solid fa-trash"></i></th>
+                  </tr>
+              </thead>
+              <tbody id="tabla_venta_productos_temp">
+              </tbody>
+          </table>
+              <!-- /.table -->
+          </div>
+          <!--TERMINACION DEL DIV DEL SCROLL DE LA TABLA-->
+          <!--INICIO DEL DIV DONDE SE PRESENTAN LOS TOTALES GLOBALES-->
+              <div class="container" style="border:1px solid #A9A9A9;">
+              <div class="row">
+                  <div class="col-md-3">
+                  <div class="btn-group" role="group" style="width:100%;height:75%;margin-left: -7px;">
+                  </div>
+                  </div>
+                  <div class="col-md-6"></div>
+                  <div class="col-md-3  text-right">
+                  <h5 class="" style="margin-top:8px;">
+                      <p align="right"><span align="right" id="total_pagar_html">Bs 0.00</span>
+                      </p>
+                  </h5>
+                  </div>
+              </div>
+              </div>
+          </div>
+      </div>
+     
+      <button type="button" class="btn btn-default btn-block btn1" data-toggle="modal" data-target="#MostrarPdf{{ $comandaspdf->id }}">
+          <i class="fas fa-check-print text-print"></i>Imprimir Ticket
+      </button>
+      @include('admin.Comanda.MostrarPdf')
+      </div>
+      <!-- /.col -->
+      <div class="col-md-5">
+      <!-- /.card-body -->
+      
+      <div class="card div_radius">
+          <div class="card-header">
+          <table>
+              <tr>
+                  <td style="width: 900px;"> 
+                      <h3 class="card-title">Datos de la venta</h3>
+                  </td>
+                  <td class="text-right">
+                  </td>
+              </tr>
+          </table>
+          <div class="card-tools">
+          </div>
+          </div>
+          <div class="card-body p-0">
+          <div class="container">
+              <div class="mb-3">
+                  <div class="form-row">
+                      <div class="col-md-6">
+                        <label for="inputNombre"  class="is-required">Nombre</label>
+                        <select class="select2" name="cliente_id" id="cliente_id">
+                            @foreach($clientes as $cliente)
+                                <option value="{{$cliente->id}}" >{{$cliente->Nombre_cliente}} {{$cliente->Apellidop_cliente}}</option>
+                            @endforeach
+                        </select>
+                      </div>
+                  </div>
+              </div>
+              <div class="mb-2">
+              <div class="row">
+                  <div class="col-md-12">
+                      <div class="group">
+                          <input type="text" name="total" id="total_pagar" class="form-control text-center input_style_total" placeholder="00.00" readonly="">
+                      </div>
+                  </div><br><br>
+                  <div class="col-md-6">
+                      <div class="group">
+                        <label for="">Monto pagado</label>
+                        <input type="text" id="pagado" name="pagado" class="form-control input_style" placeholder="$ 0.00" autocomplete="off">
+                      </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="group">
+                      <label for="">Cambio</label>
+                      <input type="text" id="vuelto" name="vuelto" class="form-control input_style" readonly="" placeholder="$ 0.00"> 
+                    </div>
+                  </div>                  
+              </div><br>
+              <div class="row">
+                <div class="col-md-12">
+                    <button type="submit" id="venta_productos_realizada" class="btn btn-success btn-block btn12">
+                        <i class="fas fa-check-circle text-success" style="background: white;"></i>
+                        <span style="font-size: 15px;">Registrar</span>
+                    </button>
+                  </div>
+              </div>
+              </div>
+          </div>
+          </div>
+      </div>    
+      </div>
+  </div>
+</form>
+@endsection
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.3.0/css/responsive.bootstrap4.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css" integrity="sha512-rRQtF4V2wtAvXsou4iUAs2kXHi3Lj9NE7xJR77DE7GHsxgY9RTWy93dzMXgDIG8ToiRTD45VsDNdTiUagOFeZA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link href="{{asset('css/modal.css')}}" rel="stylesheet" type="text/css"/> 
+<style>
+  .column {
+    width: 50%;
+    float: left;
+  }
+  .custom-select {
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    font-size: 1rem;
+    height: 300px;
+    padding: .375rem 1.75rem .375rem .75rem;
+    overflow: scroll;
+  }
+
+  .custom-select option {
+    padding: 10px;
+    color: #495057;
+    font-weight: normal;
+    width: 100%;
+  }
+  #cartpedido{
+    background-color:#ff9900;
+    list-style: none;
+    display: inline-block;
+    color: #fff;
+    text-decoration: none;
+    color: #fff;
+    padding: 5px 0px 0px;
+    color: #fff;
+    transition-duration: 0.3s;
+    -moz-transition-duration: 0.3s;
+    -webkit-transition-duration: 0.3s;
+    border-radius: 8px;
+  }
+
+  ol, ul {
+    list-style: none;
+  }
+  blockquote, q {
+    quotes: none;
+  }
+  blockquote:before, blockquote:after, q:before, q:after {
+    content: '';
+    content: none;
+  }
+  table {
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+  header h2 {
+    margin: 25px 10px;
+    font-size: 28px;
+    text-align: center;
+    color:  #ea5849;
+  }
+  .container {
+    display: table;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  nav.menu {
+    background: #ea5849;
+    position: relative;
+    min-height: 45px;
+    height: 100%;
+  }
+
+  .menu > ul > li {
+    list-style: none;
+    display: inline-block;
+    color: #fff;
+    line-height: 45px;
+    
+  }
+  .menu > ul li a, .xs-menu li a {
+    text-decoration: none;
+    color: #fff;
+    padding: 10px 24px;
+  }
+  .menu > ul li a:hover {
+    background:#444;
+    color: #fff;
+    transition-duration: 0.3s;
+    -moz-transition-duration: 0.3s;
+    -webkit-transition-duration: 0.3s;
+  }
+
+  .displaynone{
+    display: none;
+  }
+  .xs-menu-cont{
+  display:none;
+  }
+  .xs-menu-cont > a:hover{
+  cursor: pointer;
+  }
+    
+  .xs-menu li {
+  color: #fff;
+  padding: 14px 30px;
+  border-bottom: 1px solid #ccc;
+  background: #FF0000;
+
+  }
+  .xs-menu  a{
+  text-decoration:none;
+  }
+
+
+  #menutoggle i {
+      color: #fff;
+      font-size: 50px;
+      margin: 0;
+      padding: 0;
+  }
+
+
+  /*--column--*/
+  .mm-6column:after, .mm-6column:before, .mm-3column:after, .mm-3column:before{
+  content:"";
+  display:table;
+  clear:both;
+
+
+  }
+  .mm-6column, .mm-3column {
+  float: left;
+  position: relative;
+  }
+  .mm-6column {
+      width: 100%;
+  }
+  .mm-3column {
+          width: 25%;
+  }
+  .responsive-img {
+      display: block;
+      max-width: 100%;
+
+  }
+  .left-images{
+  margin-right:25px;
+  }
+  .left-images, .left-categories-list {
+    float: left;
+  }
+  .categories-list li {
+      display: block;
+      line-height: normal;
+      margin: 0;
+      padding: 5px 0;
+  }
+  .categories-list li :hover{
+      background:inherit !important;
+  }
+
+  .categories-list span {
+      font-size: 18px;
+      padding-bottom: 5px;
+      text-transform: uppercase;
+  }
+  .mm-view-more{
+    background: none repeat scroll 0 0 #FF0000;
+      color: #fff;
+      display: inline !important;
+      line-height: normal;
+      padding: 5px 8px !important;
+    margin-top:10px;
+  }
+  .display-on{
+  display:block;
+  transition-duration: 0.9s;
+  }
+  .drop-down > a:after{
+  content:"\f103";
+  color:red;
+  font-family: FontAwesome;
+  font-style: normal;
+  margin-left: 5px;
+  }
+
+  img{
+    height:150px;
+    width:100%;
+  }
+
+  .is-required:after {
+  content: '*';
+  margin-left: 3px;
+  color: red;
+  font-weight: bold;
+  }
+
+  input.switch {
+  display: inline-block;
+      cursor: pointer;
+      height: 20px;
+      width: 60px;
+      position: relative;
+      margin: 0 !important;
+      padding: 0 !important;
+  }
+  input.switch:checked::before {
+      background: #0ab534;
+  }
+  input.switch::before {
+      font-size: 14px;
+      color: #fff;
+      content:'SI - NO';
+      position: absolute;
+      background: #ea5849;
+      width: 80px;
+      border-radius: 1px;
+      height: 25px;
+      top: -4px;
+      left: 0px;
+      text-align: center;
+  }
+  input.switch::after {
+  content:'';
+  display: block;
+  position: absolute;
+  background: #FFF;
+  border-radius: 2px;
+  height: 21px;
+  width: 35px;
+  top: -3px;
+  left: 3px;
+  box-shadow: 0 0.1em 0.3em rgba(0,0,0,0.3);
+  transition: all 300ms;
+  }
+  input.switch:checked::after {
+  left: 42px; 
+  }
+  input.round.switch::after, input.round.switch::before {
+      border-radius: 20px;
+  }
+
+  .wrap {
+    text-align: right;
+  }
+  a {
+  -webkit-transition: all 200ms cubic-bezier(0.390, 0.500, 0.150, 1.360);
+  -moz-transition: all 200ms cubic-bezier(0.390, 0.500, 0.150, 1.360);
+  -ms-transition: all 200ms cubic-bezier(0.390, 0.500, 0.150, 1.360);
+  -o-transition: all 200ms cubic-bezier(0.390, 0.500, 0.150, 1.360);
+  transition: all 200ms cubic-bezier(0.390, 0.500, 0.150, 1.360);
+  max-width: 180px;
+  text-decoration: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  }
+
+  a.button {
+      color: rgba(30, 22, 54, 0.6);
+      box-shadow: rgba(30, 22, 54, 0.4) 0 0px 0px 2px inset;
+      background-color: #ffff;
+  }
+
+  a.button:hover {
+      color: #ea5849;
+      box-shadow: #ea5849 0 0px 0px 40px inset;
+  }
+
+  a.button2 {
+      color: #ea5849;
+      box-shadow: #ea5849 0 0px 0px 2px inset;
+  }
+
+  a.button2:hover {
+      color: #ea5849;
+      box-shadow: #ea5849 0 80px 0px 2px inset;
+  }
+  </style>
+  <style>
+  body {
+  margin: 0;
+  box-sizing: border-box;
+  font-family: Optima, sans-serif;
+  --border: 1px solid hsla(240, 25% ,50% , 0.3);
+  --border-table: 1px solid hsla(240, 25% ,50% , 01);
+  background: hsl(240, 20%, 20%)
+  }
+  h1 {
+  text-align: center;
+  color: white;
+  }
+
+  /* DESDE AQUI EMPIEZA LA SECCIÓN DEL CARRITO */
+  .tabla-calculo {
+  display: flex;
+  justify-content: center;
+  }
+  .tabla {
+  width:100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  color: white;
+  margin-bottom: 2rem;
+  empty-cells: hide;
+  border-radius: 10px;
+  }
+  .titulo-tabla {
+  font-size: 1.5rem;
+  }
+  .border-top-left {
+  border-top-left-radius: 10px;
+  }
+  .border-top-right {
+  border-top-right-radius: 10px;
+  }
+  .border-bottom-right {
+  border-bottom-right-radius: 10px;
+  }
+  .border-bottom-left {
+  border-bottom-left-radius: 10px;
+  }
+  th {
+  font-size: 0.5rem;
+  background: hsla(210, 60%, 70%, .7);
+  }
+  th, td, tr {
+  border: var(--border-table);
+  text-align: center;
+  }
+  td {
+  background: hsla(210, 40%, 90%, .9);
+  color: black;
+  }
+  .precio-tabla::before {
+  content: 'US$';
+  padding-right: 0.4rem;
+  }
+  .button {
+  margin: 0 .4rem;
+  border: var(--border-table);
+  background: hsla(250, 70%, 50%, .7);
+  color: white;
+  cursor: pointer;
+  }
+  .negrita {
+  font-weight: bold;
+  }
+  .none {
+  background: transparent;
+  border: none;
+  }
+
+
+  /* DESDE AQUI EMPIEZA LA SECCIÓN DE LOS PRODUCTOS */
+  .cartola {
+  height: 300px;
+  width: 230px;
+  border-radius: 0.35rem;
+  background: #f4f4f4;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow:0px 0px 1rem hsla(240, 100%, 90%, 0.3);
+  transition: transform 0.1s;
+  overflow: hidden;
+  margin: 1rem;
+  }
+  .cartola:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s;
+  box-shadow: 0 0 2rem hsla(240, 100%, 90%, 0.5);
+  }
+  /* Imagen */
+  .contenedor-img {
+  border-radius-top-left: .35rem;
+  height: 127px;
+  overflow: hidden;
+  }
+  img {
+  width: 100%;
+  }
+  /* Nombre y descripción del producto */
+  .div-info {
+  flex: 1;
+  border-bottom: var(--border);
+  overflow: hidden;
+  }
+  .nombre-prod {
+  margin: 0;
+  font-size: 1.2rem;
+  text-align: center;
+  padding: 0.2rem 0;
+  }
+  .separador {
+  width: 80%;
+  margin: .2rem auto;
+  border: none;
+  border-top: var(--border);
+  }
+  .descripcion-prod {
+  margin: 0;
+  font-size: 0.9rem;
+  padding: 0.2rem 1rem;
+  overflow: hidden;
+  opacity: .7;
+  }
+  /* Precio y Boton Carrito */
+  .div-precio-boton {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: .5rem;
+  }
+  .precio {
+  margin: 0 .5em;
+  }
+  .precio::before {
+  content: 'US$';
+  padding-right: 0.3rem;
+  }
+  .boton {
+  background: hsla(210, 40%, 70%, .7);
+  cursor: pointer;
+  border: var(--border);
+  font-size: 1rem;
+  width: 100px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  box-shadow: 1px 1px 3px hsl(0, 100%, 0%, 0.15);
+  }
+  .boton:hover {
+  color: rgba(255, 255, 255, .8);
+  background: hsla(210, 40%, 50%, 1);
+  box-shadow: 1px 1px 3px hsl(0, 100%, 0%, 0.25);
+  }
+  .boton::after {
+  content: '';
+  display: block;
+  height: 20px;
+  width: 20px;
+  background: url(https://cdn-icons-png.flaticon.com/512/1656/1656456.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  }
+  .boton:hover::after {
+  content: '';
+  display: block;
+  height: 20px;
+  width: 20px;
+  background: url(https://cdn-icons-png.flaticon.com/512/1656/1656456.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  }
+  .carrito {
+  width: 18px;
+  }
+  /* Contenedor de todos los productos */
+  .contenedor-productos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: stretch;
+  }
+</style>
+@notifyCss
+@push('js')
+<script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.8/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.8/js/responsive.bootstrap4.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.16/dist/sweetalert2.all.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.select2').select2({
+            width: '200%',
+        });
+    });    
+</script>
+<script>  
+    let precio1 = document.getElementById("total_pagar")
+    let precio2 = document.getElementById("pagado")
+    let precio3 = document.getElementById("vuelto")
+  
+        precio2.addEventListener("change", () => {
+        if(precio2.value < precio1.value){
+            precio3.value = 0;
+        }else{
+            precio3.value = parseFloat(precio2.value) - parseFloat(precio1.value);   
+        }
+    })    
+</script>
+  
+<script>
+    $(document).ready(function() {
+        $("#agregar").click(function() {
+            agregar();
+        });
+      });
+      var cont = 1;
+      total = 0;
+      subtotal = [];
+      $("#guardar").hide();
+      $("#id_plato").change(mostrarValores);
+      function mostrarValores() {
+          datosProducto = document.getElementById('id_plato').value.split('_');
+          $("#Precio_plato").val(datosProducto[2]);
+      }
+      function agregar() {
+          datosProducto = document.getElementById('id_plato').value.split('_');
+          id_plato = datosProducto[0];
+          articulo = $("#id_plato option:selected").text();
+          cantidad = $("#cantidad").val();
+          comentario = $("#comentario").val();
+          descuento = $("#descuento").val();
+          Precio_plato = $("#Precio_plato").val();
+          if (id_plato != "" && cantidad != "" && cantidad > 0 && descuento != "" && Precio_plato != "") {
+              if (parseInt(cantidad) > 0) {
+                  subtotal[cont] = (cantidad * Precio_plato);
+                  total = total + subtotal[cont];
+                  var fila = '<tr id="fila' + cont +
+                      '"><td>'+ cont +'</td> <td><input type="hidden" name="id_plato[]" value="' +
+                      id_plato + '">' + articulo + '</td> <td> <input type="hidden" name="comentario[]" value="' +
+                      comentario + '">' + comentario + '</td> <td> <input type="hidden" name="cantidad[]" value="' +
+                      cantidad + '"> <input type="number" value="' + cantidad +
+                      '" class="form-control" disabled> </td><td> <input type="hidden" name="Precio_plato[]" value="' +
+                      parseFloat(Precio_plato).toFixed(2) + '"> <input class="form-control" type="number" value="' +
+                      parseFloat(Precio_plato).toFixed(2) +
+                      '" disabled> </td> <td align="right">Bs ' + parseFloat(subtotal[cont]).toFixed(
+                          2) + '</td><td><button type="button" class="btn btn-danger btn-sm" onclick="eliminar(' + cont +
+                      ');"><i class="fa fa-trash-alt"></i></button></td></tr>';
+                  cont++;
+                  limpiar();
+                  totales();
+                  evaluar();
+                  $('#detalles').append(fila);
+              } else {
+                  Swal.fire({
+                      icon: 'error',
+                      title: 'Lo siento',
+                      text: 'La cantidad a vender supera el stock.',
+                  })
+              }
+          } else {
+              Swal.fire({
+                  icon: 'error',
+                  title: 'Lo siento',
+                  text: 'Rellene todos los campos del detalle de la venta.',
+              })
+          }
+      }
+  
+      function limpiar() {
+          $("#id_plato").prop("selectedIndex", 0);
+          $("#cantidad").val("");
+          $("#descuento").val("0");
+          $("#comentario").val("");
+          $("#Precio_plato").val("");
+      }
+      function totales() {
+          $("#total").html("Bs " + total.toFixed(2));
+          total_pagar = total;
+          $("#total_pagar_html").html("Bs " + total_pagar.toFixed(2));
+          $("#total_pagar").val(total_pagar.toFixed(2));
+      }
+      function evaluar() {
+          if (total > 0) {
+              $("#guardar").show();
+          } else {
+              $("#guardar").hide();
+          }
+      }
+      function eliminar(index) {
+          total = total - subtotal[index];
+          total_pagar_html = total;
+          $("#total").html("Bs" + total);
+          $("#total_pagar_html").html("Bs" + total_pagar_html.toFixed(2));
+          $("#total_pagar").val(total_pagar_html.toFixed(2));
+          $("#fila" + index).remove();
+          evaluar();
+      }
+</script>
+    
+<script>
+    $(document).ready(function() {
+        $("form").keypress(function(e) {
+            if (e.which == 13) {
+                return true;
+            }
+        });
+    });
+</script>
+
+<script>
+    $('.registrar-form').submit(function(e) {
+        e.preventDefault();
+        Swal.fire({
+            title: 'Estas Seguro Que Quieres Registrar La VENTA?',
+            text: "Verificaste Todos Los Registros Correctamente",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, Registrar!',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.submit();
+            }
+        });
+    });
+</script>
+@if (session('delete') == 'ok')
+    <script>
+        Swal.fire(
+            'Eliminar!',
+            'Se Eliminó el registro.',
+            'warning'
+        )
+    </script>
+@endif
+@notifyJs
+@endpush
